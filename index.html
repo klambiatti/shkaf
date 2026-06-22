@@ -85,6 +85,11 @@
       transition: opacity 0.15s;
     }
     .photo-thumb:hover { opacity: 0.9; }
+    .photo-thumb--facade {
+      aspect-ratio: 3 / 4;
+      object-fit: contain;
+      background: var(--fill);
+    }
     .lightbox {
       display: none;
       position: fixed;
@@ -145,30 +150,6 @@
     Комната: ниша ~270 см (ширина) × 75 см (глубина) × 240 см (высота). Дверь слева у угла.
   </div>
 
-  <div class="card">
-    <h2>Фото и референсы</h2>
-    <div class="photos">
-      <div class="photo-item">
-        <p>Комната — место установки</p>
-        <img
-          class="photo-thumb"
-          src="images/room.png"
-          alt="Комната, место под шкаф"
-          data-caption="Комната — ниша ~270 × 75 × 240 см, дверь слева у угла"
-        >
-      </div>
-      <div class="photo-item">
-        <p>Референс фасада — декоративная текстура (рифление)</p>
-        <img
-          class="photo-thumb"
-          src="images/facade-texture.png"
-          alt="Референс фасада с рифлёной текстурой"
-          data-caption="Пример декоративной текстуры фасада — вертикальное рифление"
-        >
-      </div>
-    </div>
-  </div>
-
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button class="lightbox-close" type="button" aria-label="Закрыть">&times;</button>
     <img id="lightbox-img" src="" alt="">
@@ -203,6 +184,30 @@
     <div class="facade-wrap" id="facade-v2"></div>
     <h3>Наполнение отсеков</h3>
     <div class="sections" id="sections-v2"></div>
+  </div>
+
+  <div class="card">
+    <h2>Фото и референсы</h2>
+    <div class="photos">
+      <div class="photo-item">
+        <p>Комната — место установки</p>
+        <img
+          class="photo-thumb"
+          src="images/room.png"
+          alt="Комната, место под шкаф"
+          data-caption="Комната — ниша ~270 × 75 × 240 см, дверь слева у угла"
+        >
+      </div>
+      <div class="photo-item">
+        <p>Референс фасада — декоративная текстура (рифление)</p>
+        <img
+          class="photo-thumb photo-thumb--facade"
+          src="images/facade-texture.png"
+          alt="Референс фасада с рифлёной текстурой"
+          data-caption="Пример декоративной текстуры фасада — вертикальное рифление"
+        >
+      </div>
+    </div>
   </div>
 </div>
 
