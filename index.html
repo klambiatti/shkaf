@@ -64,6 +64,71 @@
       font-size: 13px;
       margin-bottom: 20px;
     }
+    .photos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .photo-item { text-align: center; }
+    .photo-item p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .photo-thumb {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      cursor: zoom-in;
+      transition: opacity 0.15s;
+    }
+    .photo-thumb:hover { opacity: 0.9; }
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.85);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 32px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+    .lightbox-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 14px;
+      text-align: center;
+      max-width: 90%;
+    }
+    @media (max-width: 600px) {
+      .photos { grid-template-columns: 1fr; }
+    }
     svg text { font-family: inherit; }
     @media print {
       body { background: #fff; padding: 0; }
@@ -78,6 +143,36 @@
 
   <div class="callout">
     Комната: ниша ~270 см (ширина) × 75 см (глубина) × 240 см (высота). Дверь слева у угла.
+  </div>
+
+  <div class="card">
+    <h2>Фото и референсы</h2>
+    <div class="photos">
+      <div class="photo-item">
+        <p>Комната — место установки</p>
+        <img
+          class="photo-thumb"
+          src="images/room.png"
+          alt="Комната, место под шкаф"
+          data-caption="Комната — ниша ~270 × 75 × 240 см, дверь слева у угла"
+        >
+      </div>
+      <div class="photo-item">
+        <p>Референс фасада — декоративная текстура (рифление)</p>
+        <img
+          class="photo-thumb"
+          src="images/facade-texture.png"
+          alt="Референс фасада с рифлёной текстурой"
+          data-caption="Пример декоративной текстуры фасада — вертикальное рифление"
+        >
+      </div>
+    </div>
+  </div>
+
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Закрыть">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+    <p class="lightbox-caption" id="lightbox-caption"></p>
   </div>
 
   <div class="card" id="v1">
@@ -238,6 +333,37 @@ renderSections('sections-v2', [
   { title: 'Отсек 4', type: 'storage', w: 48 },
   { title: 'Отсек 5', type: 'utility', w: 58 },
 ]);
+
+(function initLightbox() {
+  const box = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  const caption = document.getElementById('lightbox-caption');
+  const closeBtn = box.querySelector('.lightbox-close');
+
+  function open(src, alt, text) {
+    img.src = src;
+    img.alt = alt;
+    caption.textContent = text;
+    box.classList.add('open');
+    box.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    box.classList.remove('open');
+    box.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    img.src = '';
+  }
+
+  document.querySelectorAll('.photo-thumb').forEach(el => {
+    el.addEventListener('click', () => open(el.src, el.alt, el.dataset.caption || el.alt));
+  });
+
+  closeBtn.addEventListener('click', close);
+  box.addEventListener('click', e => { if (e.target === box) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
 </script>
 </body>
 </html>
