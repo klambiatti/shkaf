@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Схемы шкафа — 2 варианта</title>
+  <style>
+    :root {
+      --bg: #f7f6f3;
+      --card: #fff;
+      --text: #1a1a1a;
+      --muted: #666;
+      --border: #d4d0c8;
+      --fill: #ebe8e2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 32px 20px 60px;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .card h2 { font-size: 18px; font-weight: 600; margin-bottom: 24px; }
+    .card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .card h3:first-of-type { margin-top: 0; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .stat { background: var(--fill); border-radius: 4px; padding: 10px 12px; font-size: 13px; }
+    .stat strong { display: block; font-size: 16px; margin-top: 2px; }
+    .facade-wrap { margin: 4px 0; text-align: center; }
+    .facade-wrap svg { height: auto; display: inline-block; }
+    .sections {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .section-item { text-align: center; flex: 0 0 auto; }
+    .section-item p { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .section-item span { font-size: 12px; color: var(--muted); display: block; margin-top: 6px; }
+    .section-item svg { display: block; margin: 0 auto; }
+    .callout {
+      background: #eef4f8;
+      border: 1px solid #c5d8e4;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+    svg text { font-family: inherit; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .card { break-inside: avoid; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Схемы шкафа — 2 варианта</h1>
+  <p class="subtitle">Матовые фасады, вертикальные ручки. Размеры — для обсуждения с замерщиком.</p>
+
+  <div class="callout">
+    Комната: ниша ~270 см (ширина) × 75 см (глубина) × 240 см (высота). Дверь слева у угла.
+  </div>
+
+  <div class="card" id="v1">
+    <h2>Вариант 1 — 4 двери</h2>
+    <h3>Размеры</h3>
+    <div class="stats">
+      <div class="stat">Ширина<strong>210 см</strong></div>
+      <div class="stat">Высота<strong>225 см</strong></div>
+      <div class="stat">Глубина<strong>65 см</strong></div>
+      <div class="stat">Зазор<strong>~30 см</strong></div>
+    </div>
+    <h3>Фасад</h3>
+    <div class="facade-wrap" id="facade-v1"></div>
+    <h3>Наполнение отсеков</h3>
+    <div class="sections" id="sections-v1"></div>
+  </div>
+
+  <div class="card" id="v2">
+    <h2>Вариант 2 — 5 дверей</h2>
+    <h3>Размеры</h3>
+    <div class="stats">
+      <div class="stat">Ширина<strong>250 см</strong></div>
+      <div class="stat">Высота<strong>225 см</strong></div>
+      <div class="stat">Глубина<strong>65 см</strong></div>
+      <div class="stat">Зазор<strong>~10 см</strong></div>
+    </div>
+    <h3>Фасад</h3>
+    <div class="facade-wrap" id="facade-v2"></div>
+    <h3>Наполнение отсеков</h3>
+    <div class="sections" id="sections-v2"></div>
+  </div>
+</div>
+
+<script>
+const COLORS = {
+  cabinet: '#ebe8e2',
+  door: '#e0ddd6',
+  stroke: '#b8b4ac',
+  handle: '#888',
+  shelf: '#f0ede8',
+  drawer: '#d5d0c8',
+  text: '#444',
+  dim: '#777',
+};
+
+const FACADE_SCALE = 0.5;
+const INTERNAL_W = 120;
+const INTERNAL_H = 260;
+
+function renderFacade(containerId, width, height, doorWidths) {
+  const scale = FACADE_SCALE;
+  const ox = 36, oy = 24;
+  const cw = width * scale, ch = height * scale;
+  const dimY = oy + ch + 18;
+  const svgW = cw + 72;
+  const svgH = dimY + 34;
+
+  let x = ox;
+  const doors = doorWidths.map(dw => {
+    const w = (dw / width) * cw;
+    const d = { x, y: oy, w, h: ch, dw };
+    x += w;
+    return d;
+  });
+
+  const displayW = Math.round(width * 2.1);
+  const displayH = Math.round(svgH * (displayW / svgW));
+
+  let svg = `<svg width="${displayW}" height="${displayH}" viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg">`;
+
+  svg += `<text x="${ox + cw / 2}" y="16" text-anchor="middle" font-size="11" font-weight="600" fill="${COLORS.text}">${width} см</text>`;
+  svg += `<text x="14" y="${oy + ch / 2}" text-anchor="middle" font-size="11" font-weight="600" fill="${COLORS.text}" transform="rotate(-90,14,${oy + ch / 2})">${height} см</text>`;
+
+  svg += `<rect x="${ox}" y="${oy}" width="${cw}" height="${ch}" fill="${COLORS.cabinet}" stroke="${COLORS.stroke}" stroke-width="1.5"/>`;
+
+  doors.forEach(d => {
+    svg += `<rect x="${d.x + 1}" y="${d.y + 1}" width="${d.w - 2}" height="${d.h - 2}" fill="${COLORS.door}" stroke="${COLORS.stroke}" stroke-width="1"/>`;
+    svg += `<line x1="${d.x + d.w - 7}" y1="${d.y + d.h * 0.2}" x2="${d.x + d.w - 7}" y2="${d.y + d.h * 0.75}" stroke="${COLORS.handle}" stroke-width="2" stroke-linecap="round"/>`;
+  });
+
+  svg += `<line x1="${ox}" y1="${dimY}" x2="${ox + cw}" y2="${dimY}" stroke="${COLORS.dim}" stroke-width="1"/>`;
+  doors.forEach((d, i) => {
+    svg += `<line x1="${d.x}" y1="${dimY - 4}" x2="${d.x}" y2="${dimY + 4}" stroke="${COLORS.dim}" stroke-width="1"/>`;
+    svg += `<line x1="${d.x + d.w}" y1="${dimY - 4}" x2="${d.x + d.w}" y2="${dimY + 4}" stroke="${COLORS.dim}" stroke-width="1"/>`;
+    const labelY = dimY + 14 + (i % 2) * 11;
+    svg += `<text x="${d.x + d.w / 2}" y="${labelY}" text-anchor="middle" font-size="8.5" fill="${COLORS.dim}">${d.dw}</text>`;
+  });
+  svg += `<line x1="${ox}" y1="${dimY + 30}" x2="${ox + cw}" y2="${dimY + 30}" stroke="none"/>`;
+
+  svg += '</svg>';
+  document.getElementById(containerId).innerHTML = svg;
+}
+
+function renderInternal(type) {
+  const w = INTERNAL_W, h = INTERNAL_H;
+  const pad = 5, inner = w - pad * 2;
+  let content = '';
+
+  if (type === 'storage') {
+    content = `
+      <rect x="${pad}" y="12" width="${inner}" height="30" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <rect x="${pad}" y="46" width="${inner}" height="30" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <rect x="${pad}" y="80" width="${inner}" height="30" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <rect x="${pad}" y="116" width="${inner}" height="20" fill="${COLORS.drawer}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <rect x="${pad}" y="140" width="${inner}" height="20" fill="${COLORS.drawer}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <rect x="${pad}" y="164" width="${inner}" height="20" fill="${COLORS.drawer}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <rect x="${pad}" y="192" width="${inner}" height="30" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <rect x="${pad}" y="228" width="${inner}" height="30" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+    `;
+  } else if (type === 'hanging') {
+    content = `
+      <rect x="${pad}" y="12" width="${inner}" height="32" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <line x1="16" y1="96" x2="${w - 16}" y2="96" stroke="${COLORS.handle}" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="${w / 2}" y="148" text-anchor="middle" font-size="11" fill="${COLORS.text}">вешалка</text>
+      <rect x="${pad}" y="228" width="${inner}" height="30" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+    `;
+  } else {
+    content = `
+      <rect x="${pad}" y="12" width="${inner}" height="26" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+      <rect x="${pad}" y="42" width="${inner}" height="172" fill="none" stroke="${COLORS.stroke}" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <text x="${w / 2}" y="120" text-anchor="middle" font-size="10" fill="${COLORS.text}">пылесос,</text>
+      <text x="${w / 2}" y="134" text-anchor="middle" font-size="10" fill="${COLORS.text}">швабра,</text>
+      <text x="${w / 2}" y="148" text-anchor="middle" font-size="10" fill="${COLORS.text}">глад. доска</text>
+      <rect x="${pad}" y="228" width="${inner}" height="30" fill="${COLORS.shelf}" stroke="${COLORS.stroke}" stroke-width="1"/>
+    `;
+  }
+
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <rect width="${w}" height="${h}" fill="${COLORS.cabinet}" stroke="${COLORS.stroke}" stroke-width="1.5"/>
+    ${content}
+  </svg>`;
+}
+
+function renderSections(containerId, sections) {
+  document.getElementById(containerId).innerHTML = sections.map(s => `
+    <div class="section-item">
+      <p>${s.title}</p>
+      ${renderInternal(s.type)}
+      <span>${s.w} см</span>
+    </div>
+  `).join('');
+}
+
+const v1w = 52.5;
+renderFacade('facade-v1', 210, 225, [v1w, v1w, v1w, v1w]);
+renderSections('sections-v1', [
+  { title: 'Отсек 1', type: 'storage', w: v1w },
+  { title: 'Отсек 2', type: 'hanging', w: v1w },
+  { title: 'Отсек 3', type: 'hanging', w: v1w },
+  { title: 'Отсек 4', type: 'storage', w: v1w },
+]);
+
+renderFacade('facade-v2', 250, 225, [48, 48, 48, 48, 58]);
+renderSections('sections-v2', [
+  { title: 'Отсек 1', type: 'storage', w: 48 },
+  { title: 'Отсек 2', type: 'hanging', w: 48 },
+  { title: 'Отсек 3', type: 'hanging', w: 48 },
+  { title: 'Отсек 4', type: 'storage', w: 48 },
+  { title: 'Отсек 5', type: 'utility', w: 58 },
+]);
+</script>
+</body>
+</html>
