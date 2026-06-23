@@ -14,14 +14,16 @@
       --fill: #ebe8e2;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-x: clip; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
       padding: 32px 20px 60px;
+      overflow-x: clip;
     }
-    .wrap { max-width: 960px; margin: 0 auto; }
+    .wrap { max-width: 960px; margin: 0 auto; overflow-x: clip; }
     h1 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
     .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
     .card {
@@ -44,8 +46,21 @@
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .stat { background: var(--fill); border-radius: 4px; padding: 10px 12px; font-size: 13px; }
     .stat strong { display: block; font-size: 16px; margin-top: 2px; }
-    .facade-wrap { margin: 4px 0; text-align: center; }
-    .facade-wrap svg { height: auto; display: inline-block; }
+    .facade-wrap { margin: 4px 0; text-align: center; width: 100%; }
+    .facade-wrap svg {
+      width: 100%;
+      max-width: 440px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    .facade-legend {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      word-break: break-word;
+    }
     .sections {
       display: flex;
       gap: 14px;
@@ -55,7 +70,13 @@
     .section-item { text-align: center; flex: 0 0 auto; }
     .section-item p { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
     .section-item span { font-size: 12px; color: var(--muted); display: block; margin-top: 6px; }
-    .section-item svg { display: block; margin: 0 auto; }
+    .section-item svg {
+      display: block;
+      margin: 0 auto;
+      width: 120px;
+      height: auto;
+      max-width: 100%;
+    }
     .callout {
       background: #eef4f8;
       border: 1px solid #c5d8e4;
@@ -131,8 +152,26 @@
       text-align: center;
       max-width: 90%;
     }
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
+      body { padding: 20px 14px 40px; }
+      h1 { font-size: 20px; }
+      .subtitle { font-size: 13px; margin-bottom: 20px; }
+      .card { padding: 18px 16px; margin-bottom: 18px; }
+      .card h2 { font-size: 16px; margin-bottom: 18px; }
+      .card h3 { font-size: 12px; margin: 20px 0 10px; }
+      .stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat { padding: 8px 10px; font-size: 12px; }
+      .stat strong { font-size: 15px; }
+      .callout { font-size: 12px; padding: 10px 12px; }
       .photos { grid-template-columns: 1fr; }
+      .sections { gap: 10px; }
+      .section-item { flex: 1 1 calc(50% - 10px); min-width: 0; }
+      .section-item p { font-size: 12px; }
+      .section-item svg { width: 100%; max-width: 110px; }
+      .facade-legend { font-size: 12px; }
+    }
+    @media (max-width: 380px) {
+      .section-item { flex: 1 1 100%; }
     }
     svg text { font-family: inherit; }
     @media print {
@@ -231,9 +270,8 @@ function renderFacade(containerId, width, height, doorWidths) {
   const scale = FACADE_SCALE;
   const ox = 36, oy = 24;
   const cw = width * scale, ch = height * scale;
-  const dimY = oy + ch + 18;
   const svgW = cw + 72;
-  const svgH = dimY + 34;
+  const svgH = oy + ch + 12;
 
   let x = ox;
   const doors = doorWidths.map(dw => {
@@ -243,10 +281,7 @@ function renderFacade(containerId, width, height, doorWidths) {
     return d;
   });
 
-  const displayW = Math.round(width * 2.1);
-  const displayH = Math.round(svgH * (displayW / svgW));
-
-  let svg = `<svg width="${displayW}" height="${displayH}" viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Фасад ${width} на ${height} см">`;
 
   svg += `<text x="${ox + cw / 2}" y="16" text-anchor="middle" font-size="11" font-weight="600" fill="${COLORS.text}">${width} см</text>`;
   svg += `<text x="14" y="${oy + ch / 2}" text-anchor="middle" font-size="11" font-weight="600" fill="${COLORS.text}" transform="rotate(-90,14,${oy + ch / 2})">${height} см</text>`;
@@ -258,17 +293,11 @@ function renderFacade(containerId, width, height, doorWidths) {
     svg += `<line x1="${d.x + d.w - 7}" y1="${d.y + d.h * 0.2}" x2="${d.x + d.w - 7}" y2="${d.y + d.h * 0.75}" stroke="${COLORS.handle}" stroke-width="2" stroke-linecap="round"/>`;
   });
 
-  svg += `<line x1="${ox}" y1="${dimY}" x2="${ox + cw}" y2="${dimY}" stroke="${COLORS.dim}" stroke-width="1"/>`;
-  doors.forEach((d, i) => {
-    svg += `<line x1="${d.x}" y1="${dimY - 4}" x2="${d.x}" y2="${dimY + 4}" stroke="${COLORS.dim}" stroke-width="1"/>`;
-    svg += `<line x1="${d.x + d.w}" y1="${dimY - 4}" x2="${d.x + d.w}" y2="${dimY + 4}" stroke="${COLORS.dim}" stroke-width="1"/>`;
-    const labelY = dimY + 14 + (i % 2) * 11;
-    svg += `<text x="${d.x + d.w / 2}" y="${labelY}" text-anchor="middle" font-size="8.5" fill="${COLORS.dim}">${d.dw}</text>`;
-  });
-  svg += `<line x1="${ox}" y1="${dimY + 30}" x2="${ox + cw}" y2="${dimY + 30}" stroke="none"/>`;
-
   svg += '</svg>';
-  document.getElementById(containerId).innerHTML = svg;
+
+  const legend = doorWidths.map(dw => `${dw} см`).join(' · ');
+  const container = document.getElementById(containerId);
+  container.innerHTML = `${svg}<p class="facade-legend">Ширина дверей: ${legend}</p>`;
 }
 
 function renderInternal(type) {
@@ -305,7 +334,7 @@ function renderInternal(type) {
     `;
   }
 
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  return `<svg viewBox="0 0 ${w} ${h}" class="section-svg">
     <rect width="${w}" height="${h}" fill="${COLORS.cabinet}" stroke="${COLORS.stroke}" stroke-width="1.5"/>
     ${content}
   </svg>`;
