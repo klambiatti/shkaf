@@ -14,24 +14,47 @@
       --fill: #ebe8e2;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { overflow-x: clip; }
+    html {
+      overflow-x: hidden;
+      width: 100%;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
       padding: 32px 20px 60px;
-      overflow-x: clip;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
     }
-    .wrap { max-width: 960px; margin: 0 auto; overflow-x: clip; }
-    h1 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
-    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+    .wrap {
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      overflow-wrap: break-word;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 28px;
+      overflow-wrap: break-word;
+    }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 28px;
       margin-bottom: 24px;
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
     }
     .card h2 { font-size: 18px; font-weight: 600; margin-bottom: 24px; }
     .card h3 {
@@ -43,16 +66,39 @@
       letter-spacing: 0.03em;
     }
     .card h3:first-of-type { margin-top: 0; }
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .stat { background: var(--fill); border-radius: 4px; padding: 10px 12px; font-size: 13px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .stat {
+      background: var(--fill);
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-size: 13px;
+      min-width: 0;
+      overflow-wrap: break-word;
+    }
     .stat strong { display: block; font-size: 16px; margin-top: 2px; }
-    .facade-wrap { margin: 4px 0; text-align: center; width: 100%; }
+    .facade-wrap {
+      margin: 4px 0;
+      text-align: center;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .facade-dims {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
     .facade-wrap svg {
       width: 100%;
-      max-width: 440px;
+      max-width: 100%;
       height: auto;
       display: block;
       margin: 0 auto;
+      overflow: hidden;
     }
     .facade-legend {
       margin-top: 10px;
@@ -66,16 +112,24 @@
       gap: 14px;
       flex-wrap: wrap;
       justify-content: center;
+      width: 100%;
+      max-width: 100%;
     }
-    .section-item { text-align: center; flex: 0 0 auto; }
+    .section-item {
+      text-align: center;
+      flex: 0 0 auto;
+      min-width: 0;
+      max-width: 100%;
+    }
     .section-item p { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
     .section-item span { font-size: 12px; color: var(--muted); display: block; margin-top: 6px; }
     .section-item svg {
       display: block;
       margin: 0 auto;
-      width: 120px;
+      width: 100%;
+      max-width: 120px;
       height: auto;
-      max-width: 100%;
+      overflow: hidden;
     }
     .callout {
       background: #eef4f8;
@@ -84,13 +138,16 @@
       padding: 12px 16px;
       font-size: 13px;
       margin-bottom: 20px;
+      overflow-wrap: break-word;
+      max-width: 100%;
     }
     .photos {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+      width: 100%;
     }
-    .photo-item { text-align: center; }
+    .photo-item { text-align: center; min-width: 0; }
     .photo-item p {
       font-size: 13px;
       color: var(--muted);
@@ -98,6 +155,7 @@
     }
     .photo-thumb {
       width: 100%;
+      max-width: 100%;
       aspect-ratio: 4 / 3;
       object-fit: cover;
       border-radius: 6px;
@@ -153,25 +211,25 @@
       max-width: 90%;
     }
     @media (max-width: 640px) {
-      body { padding: 20px 14px 40px; }
+      body { padding: 16px 12px 32px; }
       h1 { font-size: 20px; }
       .subtitle { font-size: 13px; margin-bottom: 20px; }
-      .card { padding: 18px 16px; margin-bottom: 18px; }
-      .card h2 { font-size: 16px; margin-bottom: 18px; }
-      .card h3 { font-size: 12px; margin: 20px 0 10px; }
-      .stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .card { padding: 16px 12px; margin-bottom: 16px; }
+      .card h2 { font-size: 16px; margin-bottom: 16px; }
+      .card h3 { font-size: 12px; margin: 18px 0 10px; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
       .stat { padding: 8px 10px; font-size: 12px; }
       .stat strong { font-size: 15px; }
       .callout { font-size: 12px; padding: 10px 12px; }
       .photos { grid-template-columns: 1fr; }
-      .sections { gap: 10px; }
-      .section-item { flex: 1 1 calc(50% - 10px); min-width: 0; }
+      .sections { gap: 8px; }
+      .section-item { flex: 1 1 calc(50% - 4px); max-width: calc(50% - 4px); }
       .section-item p { font-size: 12px; }
-      .section-item svg { width: 100%; max-width: 110px; }
-      .facade-legend { font-size: 12px; }
+      .section-item svg { max-width: 100%; }
+      .facade-legend, .facade-dims { font-size: 12px; }
     }
     @media (max-width: 380px) {
-      .section-item { flex: 1 1 100%; }
+      .section-item { flex: 1 1 100%; max-width: 100%; }
     }
     svg text { font-family: inherit; }
     @media print {
@@ -268,36 +326,37 @@ const INTERNAL_H = 260;
 
 function renderFacade(containerId, width, height, doorWidths) {
   const scale = FACADE_SCALE;
-  const ox = 36, oy = 24;
-  const cw = width * scale, ch = height * scale;
-  const svgW = cw + 72;
-  const svgH = oy + ch + 12;
+  const pad = 2;
+  const cw = width * scale;
+  const ch = height * scale;
+  const svgW = cw + pad * 2;
+  const svgH = ch + pad * 2;
+  const ox = pad;
+  const oy = pad;
 
   let x = ox;
   const doors = doorWidths.map(dw => {
     const w = (dw / width) * cw;
-    const d = { x, y: oy, w, h: ch, dw };
+    const d = { x, y: oy, w, h: ch };
     x += w;
     return d;
   });
 
-  let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Фасад ${width} на ${height} см">`;
-
-  svg += `<text x="${ox + cw / 2}" y="16" text-anchor="middle" font-size="11" font-weight="600" fill="${COLORS.text}">${width} см</text>`;
-  svg += `<text x="14" y="${oy + ch / 2}" text-anchor="middle" font-size="11" font-weight="600" fill="${COLORS.text}" transform="rotate(-90,14,${oy + ch / 2})">${height} см</text>`;
-
+  let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Фасад ${width} на ${height} см">`;
   svg += `<rect x="${ox}" y="${oy}" width="${cw}" height="${ch}" fill="${COLORS.cabinet}" stroke="${COLORS.stroke}" stroke-width="1.5"/>`;
-
   doors.forEach(d => {
     svg += `<rect x="${d.x + 1}" y="${d.y + 1}" width="${d.w - 2}" height="${d.h - 2}" fill="${COLORS.door}" stroke="${COLORS.stroke}" stroke-width="1"/>`;
     svg += `<line x1="${d.x + d.w - 7}" y1="${d.y + d.h * 0.2}" x2="${d.x + d.w - 7}" y2="${d.y + d.h * 0.75}" stroke="${COLORS.handle}" stroke-width="2" stroke-linecap="round"/>`;
   });
-
   svg += '</svg>';
 
   const legend = doorWidths.map(dw => `${dw} см`).join(' · ');
   const container = document.getElementById(containerId);
-  container.innerHTML = `${svg}<p class="facade-legend">Ширина дверей: ${legend}</p>`;
+  container.innerHTML = `
+    <p class="facade-dims">${width} см (ширина) × ${height} см (высота)</p>
+    ${svg}
+    <p class="facade-legend">Ширина дверей: ${legend}</p>
+  `;
 }
 
 function renderInternal(type) {
